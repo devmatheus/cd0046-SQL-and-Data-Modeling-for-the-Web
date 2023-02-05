@@ -1,6 +1,11 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Fyyur | Venues{% endblock %}
 {% block content %}
+
+{% if search_term %}
+<h3>Number of search results for "{{ search_term }}": {{ results_count }}</h3>
+{% endif %}
+
 {% for item in items %}
 <h3>{{ item.city.name }}, {{ item.city.state.code }}</h3>
 	<ul class="items">

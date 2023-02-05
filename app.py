@@ -25,7 +25,7 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from flask_migrate import Migrate
-from sqlalchemy import func, exists
+from sqlalchemy import func, exists, or_
 from pprint import pprint
 
 #----------------------------------------------------------------------------#
@@ -73,11 +73,20 @@ with app.app_context():
   #  Venues
   #  ----------------------------------------------------------------
 
+  @app.route('/venues/search', methods=['POST'])
   @app.route('/venues')
   def venues():
+    is_search = request.method == 'POST'
+    search_term = request.form.get('search_term', '')
+    results_count = 0
     items = []
 
-    cities = City.query.filter(exists().where(Venue.city_id==City.id)).order_by('id').all()
+    if is_search:
+      query = City.query.filter(exists().where(Venue.city_id==City.id).where(Venue.name.ilike(f'%{search_term}%')))
+    else:
+      query = City.query.filter(exists().where(Venue.city_id==City.id))
+
+    cities = query.order_by('id').all()
 
     for city in cities:
       city_venues = []
@@ -90,28 +99,14 @@ with app.app_context():
           'num_upcoming_shows': num_upcoming_shows
         }
         city_venues.append(item)
+        results_count += 1
 
       items.append({
         'city': city,
         'venues': city_venues
       })
 
-    return render_template('pages/venues.html', items=items);
-
-  @app.route('/venues/search', methods=['POST'])
-  def search_venues():
-    # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-    # seach for Hop should return "The Musical Hop".
-    # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
-    response={
-      "count": 1,
-      "data": [{
-        "id": 2,
-        "name": "The Dueling Pianos Bar",
-        "num_upcoming_shows": 0,
-      }]
-    }
-    return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
+    return render_template('pages/venues.html', items=items, search_term=search_term, results_count=results_count)
 
   @app.route('/venues/<int:venue_id>')
   def show_venue(venue_id):
@@ -423,46 +418,7 @@ with app.app_context():
   @app.route('/shows')
   def shows():
     # displays list of shows at /shows
-    # TODO: replace with real venues data.
-    data=[{
-      "venue_id": 1,
-      "venue_name": "The Musical Hop",
-      "artist_id": 4,
-      "artist_name": "Guns N Petals",
-      "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-      "start_time": "2019-05-21T21:30:00.000Z"
-    }, {
-      "venue_id": 3,
-      "venue_name": "Park Square Live Music & Coffee",
-      "artist_id": 5,
-      "artist_name": "Matt Quevedo",
-      "artist_image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-      "start_time": "2019-06-15T23:00:00.000Z"
-    }, {
-      "venue_id": 3,
-      "venue_name": "Park Square Live Music & Coffee",
-      "artist_id": 6,
-      "artist_name": "The Wild Sax Band",
-      "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-      "start_time": "2035-04-01T20:00:00.000Z"
-    }, {
-      "venue_id": 3,
-      "venue_name": "Park Square Live Music & Coffee",
-      "artist_id": 6,
-      "artist_name": "The Wild Sax Band",
-      "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-      "start_time": "2035-04-08T20:00:00.000Z"
-    }, {
-      "venue_id": 3,
-      "venue_name": "Park Square Live Music & Coffee",
-      "artist_id": 6,
-      "artist_name": "The Wild Sax Band",
-      "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-      "start_time": "2035-04-15T20:00:00.000Z"
-    }]
-
     shows = Show.query.filter(Show.start_time >= datetime.now()).order_by(Show.start_time.desc()).all()
-
     return render_template('pages/shows.html', shows=shows)
 
   @app.route('/shows/create')
