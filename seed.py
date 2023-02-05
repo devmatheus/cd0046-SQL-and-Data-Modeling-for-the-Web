@@ -173,10 +173,13 @@ with app.app_context():
     for venue in venues:
         venue['city_id'] = City.query.filter_by(name=venue['city']).first().id
         venue['seeking_talent'] = True
-        venue['genres'] = Genre.query.order_by(func.random()).limit(random.randint(1, len(genres))).all()
         filtered_data = {k: v for k, v in venue.items() if k in Venue.__table__.columns}
+        venue_model = Venue(**filtered_data)
 
-        db.session.add(Venue(**filtered_data))
+        number_of_genres = random.randint(1, Genre.query.count())
+        venue_model.genres = Genre.query.order_by(func.random()).limit(number_of_genres).all()
+
+        db.session.add(venue_model)
 
     artists = [
         {
@@ -214,10 +217,12 @@ with app.app_context():
     for artist in artists:
         artist['city_id'] = City.query.filter_by(name=artist['city']).first().id
         artist['seeking_venue'] = True
-        artist['genres'] = Genre.query.order_by(func.random()).limit(random.randint(1, len(genres))).all()
         filtered_data = {k: v for k, v in artist.items() if k in Artist.__table__.columns}
-        
         artist_model = Artist(**filtered_data)
+
+        number_of_genres = random.randint(1, Genre.query.count())
+        artist_model.genres = Genre.query.order_by(func.random()).limit(number_of_genres).all()
+
         db.session.add(artist_model)
         db.session.flush()
         last_inserted_id = artist_model.id

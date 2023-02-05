@@ -1,11 +1,15 @@
 #----------------------------------------------------------------------------#
 # Notes
 #----------------------------------------------------------------------------#
-# I had to modernize the code to work with the latest version of Python, Flask, and SQLAlchemy.
-#
-# You can seed the database with the following command: `python seed.py`.
-# 
+# I had to modernize the code to work with the latest version of Python, Flask, and SQLAlchemy. 
 # I decided to put the models in a separate file, models.py, and import them into app.py.
+#
+# Steps to run the application:
+# 1. Create a db: `createdb fyyur`; The postgres password must be `abc`;
+# 2. Start the server: `python app.py`;
+# 3. Init the DB: `flask db upgrade`;
+# 4. Seed the DB: `python seed.py`;
+# 5. Open the browser: `http://127.0.0.1:3000`.
 #
 #----------------------------------------------------------------------------#
 # Imports
@@ -14,14 +18,14 @@
 import json
 import dateutil.parser
 import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask import Flask, render_template, request, Response, flash, redirect, url_for, jsonify
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from flask_migrate import Migrate
-from sqlalchemy.orm import joinedload
+from sqlalchemy import func, exists
 from pprint import pprint
 
 #----------------------------------------------------------------------------#
@@ -71,33 +75,28 @@ with app.app_context():
 
   @app.route('/venues')
   def venues():
-    # TODO: replace with real venues data.
-    #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
-    data=[{
-      "city": "San Francisco",
-      "state": "CA",
-      "venues": [{
-        "id": 1,
-        "name": "The Musical Hop",
-        "num_upcoming_shows": 0,
-      }, {
-        "id": 3,
-        "name": "Park Square Live Music & Coffee",
-        "num_upcoming_shows": 1,
-      }]
-    }, {
-      "city": "New York",
-      "state": "NY",
-      "venues": [{
-        "id": 2,
-        "name": "The Dueling Pianos Bar",
-        "num_upcoming_shows": 0,
-      }]
-    }]
+    items = []
 
-    # data = City.query.options(joinedload(City.venues)).order_by('id').all()
+    cities = City.query.filter(exists().where(Venue.city_id==City.id)).order_by('id').all()
 
-    return render_template('pages/venues.html', areas=data);
+    for city in cities:
+      city_venues = []
+
+      for venue in city.venues:
+        num_upcoming_shows = Show.query.filter(Show.venue_id==venue.id).filter(Show.start_time >= datetime.now()).count()
+        item = {
+          'id': venue.id,
+          'name': venue.name,
+          'num_upcoming_shows': num_upcoming_shows
+        }
+        city_venues.append(item)
+
+      items.append({
+        'city': city,
+        'venues': city_venues
+      })
+
+    return render_template('pages/venues.html', items=items);
 
   @app.route('/venues/search', methods=['POST'])
   def search_venues():
