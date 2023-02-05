@@ -230,18 +230,24 @@ with app.app_context():
   #  ----------------------------------------------------------------
   @app.route('/artists')
   def artists():
-    # TODO: replace with real data returned from querying the database
-    data=[{
-      "id": 4,
-      "name": "Guns N Petals",
-    }, {
-      "id": 5,
-      "name": "Matt Quevedo",
-    }, {
-      "id": 6,
-      "name": "The Wild Sax Band",
-    }]
-    return render_template('pages/artists.html', artists=data)
+    items = (Artist.query
+           .outerjoin(Show, Artist.id == Show.artist_id)
+           .group_by(Artist.id)
+           .order_by(Artist.name)
+           .add_columns(func.count(Show.id))
+           .filter(Show.start_time >= datetime.now())
+           .all())
+
+    artists = []
+
+    for artist, count in items:
+      artists.append({
+        "id": artist.id,
+        "name": artist.name,
+        "num_upcoming_shows": count
+      })
+
+    return render_template('pages/artists.html', artists=artists)
 
   @app.route('/artists/search', methods=['POST'])
   def search_artists():

@@ -1,12 +1,15 @@
 import datetime
 import random
-from sqlalchemy import func
+from sqlalchemy import func, text
 
 from app_instance import app, db
 
 with app.app_context():
     from models import State, City, Genre, Venue, Artist, Show
 
+    # Clear all tables
+    db.session.execute(text('DELETE FROM venue_genres'))
+    db.session.execute(text('DELETE FROM artist_genres'))
     Show.query.delete()
     Artist.query.delete()
     Venue.query.delete()
@@ -227,15 +230,16 @@ with app.app_context():
         db.session.flush()
         last_inserted_id = artist_model.id
 
-        random_venue = Venue.query.order_by(func.random()).first()
+        for i in range(random.randint(1, 4)):
+            random_venue = Venue.query.order_by(func.random()).first()
 
-        random_seconds = random.randint(0, 60 * 60 * 24 * 365) # 1 year
-        random_date = datetime.datetime.now() + datetime.timedelta(seconds=random_seconds)
+            random_seconds = random.randint(0, 60 * 60 * 24 * 365) # 1 year
+            random_date = datetime.datetime.now() + datetime.timedelta(seconds=random_seconds)
 
-        db.session.add(Show(
-            venue_id=random_venue.id,
-            artist_id=last_inserted_id,
-            start_time=random_date
-        ))
+            db.session.add(Show(
+                venue_id=random_venue.id,
+                artist_id=last_inserted_id,
+                start_time=random_date
+            ))
 
     db.session.commit()
