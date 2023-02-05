@@ -190,7 +190,7 @@ with app.app_context():
             "city": "Los Angeles",
             "address": "123 Main St, Los Angeles, CA 90001",
             "phone": "(555) 123-4567",
-            "image_link": "https://www.johnlegend.com/wp-content/uploads/2020/03/John-Legend-Header.jpg",
+            "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
             "facebook_link": "https://www.facebook.com/johnlegend/",
             "website": "https://www.johnlegend.com/",
             "seeking_venue_description": "John Legend is seeking high-quality venues to perform his soulful R&B music. Ideal venues should have a capacity of 500 or more, excellent sound and lighting systems, and a commitment to supporting live music."
@@ -200,7 +200,7 @@ with app.app_context():
             "city": "New York",
             "address": "456 Park Ave, New York, NY 10022",
             "phone": "(555) 789-1234",
-            "image_link": "https://www.edsheeran.com/wp-content/uploads/2020/03/Ed-Sheeran-Header.jpg",
+            "image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
             "facebook_link": "https://www.facebook.com/EdSheeranMusic/",
             "website": "https://www.edsheeran.com/",
             "seeking_venue_description": "Ed Sheeran is seeking high-quality venues to perform his pop and folk-inspired music. Ideal venues should have a capacity of 1000 or more, excellent sound and lighting systems, and a commitment to supporting live music."
@@ -210,7 +210,7 @@ with app.app_context():
             "city": "Los Angeles",
             "address": "789 Elm St, Los Angeles, CA 90001",
             "phone": "(555) 987-6543",
-            "image_link": "https://www.billieeilish.com/wp-content/uploads/2020/03/Billie-Eilish-Header.jpg",
+            "image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
             "facebook_link": "https://www.facebook.com/billieeilish/",
             "website": "https://www.billieeilish.com/",
             "seeking_venue_description": "Billie Eilish is seeking high-quality venues to perform her unique brand of alternative pop music. Ideal venues should have a capacity of 1000 or more, excellent sound and lighting systems, and a commitment to supporting live music."

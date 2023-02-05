@@ -460,7 +460,10 @@ with app.app_context():
       "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
       "start_time": "2035-04-15T20:00:00.000Z"
     }]
-    return render_template('pages/shows.html', shows=data)
+
+    shows = Show.query.filter(Show.start_time >= datetime.now()).order_by(Show.start_time.desc()).all()
+
+    return render_template('pages/shows.html', shows=shows)
 
   @app.route('/shows/create')
   def create_shows():
