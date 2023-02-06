@@ -1,7 +1,6 @@
 import datetime
 import random
 from sqlalchemy import func, text
-
 from app_instance import app, db
 
 with app.app_context():
@@ -149,7 +148,7 @@ with app.app_context():
             "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
             "facebook_link": "https://www.facebook.com/TheFillmoreSF/",
             "website": "https://www.fillmore.com/",
-            "seeking_talent_description": "The Fillmore is seeking talented musicians in all genres to perform on our stage. We have a strong commitment to supporting local and emerging artists."
+            "seeking_description": "The Fillmore is seeking talented musicians in all genres to perform on our stage. We have a strong commitment to supporting local and emerging artists."
         },
         {
             "name": "The Bowery Ballroom",
@@ -159,7 +158,7 @@ with app.app_context():
             "image_link": "https://images.unsplash.com/photo-1497032205916-ac775f0649ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
             "facebook_link": "https://www.facebook.com/TheBoweryBallroom/",
             "website": "https://www.boweryballroom.com/",
-            "seeking_talent_description": "The Bowery Ballroom is seeking talented musicians in all genres to perform on our stage. We have a passion for supporting independent and alternative artists."
+            "seeking_description": "The Bowery Ballroom is seeking talented musicians in all genres to perform on our stage. We have a passion for supporting independent and alternative artists."
         },
         {
             "name": "The Troubadour",
@@ -169,7 +168,7 @@ with app.app_context():
             "image_link": "https://images.unsplash.com/photo-1485686531765-ba63b07845a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80",
             "facebook_link": "https://www.facebook.com/TroubadourWestHollywood/",
             "website": "https://www.troubadour.com/",
-            "seeking_talent_description": "The Troubadour is seeking talented musicians in all genres to perform on our stage. We have a commitment to promoting emerging and established artists alike."
+            "seeking_description": "The Troubadour is seeking talented musicians in all genres to perform on our stage. We have a commitment to promoting emerging and established artists alike."
         }
     ]
 
@@ -193,7 +192,7 @@ with app.app_context():
             "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
             "facebook_link": "https://www.facebook.com/johnlegend/",
             "website": "https://www.johnlegend.com/",
-            "seeking_venue_description": "John Legend is seeking high-quality venues to perform his soulful R&B music. Ideal venues should have a capacity of 500 or more, excellent sound and lighting systems, and a commitment to supporting live music."
+            "seeking_description": "John Legend is seeking high-quality venues to perform his soulful R&B music. Ideal venues should have a capacity of 500 or more, excellent sound and lighting systems, and a commitment to supporting live music."
         },
         {
             "name": "Ed Sheeran",
@@ -203,7 +202,7 @@ with app.app_context():
             "image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
             "facebook_link": "https://www.facebook.com/EdSheeranMusic/",
             "website": "https://www.edsheeran.com/",
-            "seeking_venue_description": "Ed Sheeran is seeking high-quality venues to perform his pop and folk-inspired music. Ideal venues should have a capacity of 1000 or more, excellent sound and lighting systems, and a commitment to supporting live music."
+            "seeking_description": "Ed Sheeran is seeking high-quality venues to perform his pop and folk-inspired music. Ideal venues should have a capacity of 1000 or more, excellent sound and lighting systems, and a commitment to supporting live music."
         },
         {
             "name": "Billie Eilish",
@@ -213,7 +212,7 @@ with app.app_context():
             "image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
             "facebook_link": "https://www.facebook.com/billieeilish/",
             "website": "https://www.billieeilish.com/",
-            "seeking_venue_description": "Billie Eilish is seeking high-quality venues to perform her unique brand of alternative pop music. Ideal venues should have a capacity of 1000 or more, excellent sound and lighting systems, and a commitment to supporting live music."
+            "seeking_description": "Billie Eilish is seeking high-quality venues to perform her unique brand of alternative pop music. Ideal venues should have a capacity of 1000 or more, excellent sound and lighting systems, and a commitment to supporting live music."
         }
     ]
 
@@ -230,11 +229,16 @@ with app.app_context():
         db.session.flush()
         last_inserted_id = artist_model.id
 
-        for i in range(random.randint(1, 4)):
+        for i in range(random.randint(1, 6)):
             random_venue = Venue.query.order_by(func.random()).first()
 
             random_seconds = random.randint(0, 60 * 60 * 24 * 365) # 1 year
-            random_date = datetime.datetime.now() + datetime.timedelta(seconds=random_seconds)
+            random_date = datetime.datetime.now()
+
+            if random.randint(0, 1) == 1:
+                random_date += datetime.timedelta(seconds=random_seconds)
+            else:
+                random_date -= datetime.timedelta(seconds=random_seconds)
 
             db.session.add(Show(
                 venue_id=random_venue.id,

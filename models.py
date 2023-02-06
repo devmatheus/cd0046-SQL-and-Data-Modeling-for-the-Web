@@ -1,5 +1,5 @@
+import datetime
 from app_instance import db
-from dateutil import parser
 
 class State(db.Model):
     __tablename__ = 'states'
@@ -46,6 +46,22 @@ class Venue(db.Model):
     genres = db.relationship('Genre', secondary=venue_genres, lazy='subquery',
         backref=db.backref('venues', lazy=True))
 
+    @property
+    def upcoming_shows(self):
+        return Show.query.filter(Show.venue_id == self.id).filter(Show.start_time >= datetime.datetime.now()).all()
+    
+    @property
+    def past_shows(self):
+        return Show.query.filter(Show.venue_id == self.id).filter(Show.start_time < datetime.datetime.now()).all()
+
+    @property
+    def num_upcoming_shows(self):
+        return len(self.upcoming_shows)
+    
+    @property
+    def past_shows_count(self):
+        return len(self.past_shows)
+
 artist_genres = db.Table('artist_genres',
     db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True),
     db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True)
@@ -66,6 +82,22 @@ class Artist(db.Model):
     shows = db.relationship('Show', backref='artist', lazy=True)
     genres = db.relationship('Genre', secondary=artist_genres, lazy='subquery',
         backref=db.backref('artists', lazy=True))
+
+    @property
+    def upcoming_shows(self):
+        return Show.query.filter(Show.artist_id == self.id).filter(Show.start_time >= datetime.now()).all()
+
+    @property
+    def past_shows(self):
+        return Show.query.filter(Show.artist_id == self.id).filter(Show.start_time < datetime.now()).all()
+
+    @property
+    def num_upcoming_shows(self):
+        return len(self.upcoming_shows)
+
+    @property
+    def past_shows_count(self):
+        return len(self.past_shows)
 
 class Show(db.Model):
     __tablename__ = 'shows'
