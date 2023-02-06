@@ -5,13 +5,11 @@
     <form method="post" class="form">
       <h3 class="form-heading">List a new show</h3>
       <div class="form-group">
-        <label for="artist_id">Artist ID</label>
-        <small>ID can be found on the Artist's Page</small>
+        <label for="artist_id">Artist</label>
         {{ form.artist_id(class_ = 'form-control', autofocus = true) }}
       </div>
       <div class="form-group">
-        <label for="venue_id">Venue ID</label>
-        <small>ID can be found on the Venue's Page</small>
+        <label for="venue_id">Venue</label>
         {{ form.venue_id(class_ = 'form-control', autofocus = true) }}
       </div>
       <div class="form-group">
@@ -21,4 +19,12 @@
       <input type="submit" value="Create Venue" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+        $('#start_time').datetimepicker({
+            format: 'Y-m-d H:i',
+            minDate: 'today'
+        });
+    });
+  </script>
 {% endblock %}

@@ -2,6 +2,25 @@ from datetime import datetime
 from flask_wtf import Form
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, AnyOf, URL
+from app_instance import app
+
+class ShowForm(Form):
+    with app.app_context():
+        from models import Artist, Venue
+
+        artist_id = SelectField(
+            'artist_id',
+            choices=[(artist.id, artist.name) for artist in Artist.query.order_by(Artist.name).all()],
+        )
+        venue_id = SelectField(
+            'venue_id',
+            choices=[(venue.id, venue.name) for venue in Venue.query.order_by(Venue.name).all()],
+        )
+        start_time = StringField(
+            'start_time',
+            validators=[DataRequired()],
+            default=datetime.today().strftime('%Y-%m-%d %H:%M')
+        )
 
 def init_app(models):
     try:
@@ -17,19 +36,6 @@ def init_app(models):
         cities_list = []
         genres_list = []
         
-
-    class ShowForm(Form):
-        artist_id = StringField(
-            'artist_id'
-        )
-        venue_id = StringField(
-            'venue_id'
-        )
-        start_time = DateTimeField(
-            'start_time',
-            validators=[DataRequired()],
-            default= datetime.today()
-        )
 
     class VenueForm(Form):
         name = StringField(
