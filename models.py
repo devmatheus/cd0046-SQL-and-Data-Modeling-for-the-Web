@@ -85,11 +85,11 @@ class Artist(db.Model):
 
     @property
     def upcoming_shows(self):
-        return Show.query.filter(Show.artist_id == self.id).filter(Show.start_time >= datetime.now()).all()
+        return Show.query.filter(Show.artist_id == self.id).filter(Show.start_time >= datetime.datetime.now()).all()
 
     @property
     def past_shows(self):
-        return Show.query.filter(Show.artist_id == self.id).filter(Show.start_time < datetime.now()).all()
+        return Show.query.filter(Show.artist_id == self.id).filter(Show.start_time < datetime.datetime.now()).all()
 
     @property
     def num_upcoming_shows(self):

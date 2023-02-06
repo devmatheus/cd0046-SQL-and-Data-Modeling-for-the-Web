@@ -6,19 +6,21 @@
 <h3>Number of search results for "{{ search_term }}": {{ results_count }}</h3>
 {% endif %}
 
-{% for item in items %}
-<h3>{{ item.city.name }}, {{ item.city.state.code }}</h3>
+{% for city in cities %}
+<h3>{{ city.name }}, {{ city.state.code }}</h3>
 	<ul class="items">
-		{% for venue in item.venues %}
-		<li>
-			<a href="/venues/{{ venue.id }}">
-				<i class="fas fa-music"></i>
-				<div class="item">
-					<h5>{{ venue.name }}</h5>
-					<p>{{ venue.num_upcoming_shows }} upcoming shows</p>
-				</div>
-			</a>
-		</li>
+		{% for venue in city.venues %}
+			{% if not search_term or (search_term and venue.name.lower().find(search_term.lower()) > -1) %}
+			<li>
+				<a href="/venues/{{ venue.id }}">
+					<i class="fas fa-music"></i>
+					<div class="item">
+						<h5>{{ venue.name }}</h5>
+						<p>{{ venue.num_upcoming_shows }} upcoming shows</p>
+					</div>
+				</a>
+			</li>
+			{% endif %}
 		{% endfor %}
 	</ul>
 {% endfor %}

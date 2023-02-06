@@ -169,7 +169,38 @@ with app.app_context():
             "facebook_link": "https://www.facebook.com/TroubadourWestHollywood/",
             "website": "https://www.troubadour.com/",
             "seeking_description": "The Troubadour is seeking talented musicians in all genres to perform on our stage. We have a commitment to promoting emerging and established artists alike."
+        },
+        {
+            "name": "The Rialto",
+            "city": "Tucson",
+            "address": "318 E Congress St, Tucson, AZ 85701",
+            "phone": "(520) 740-1000",
+            "image_link": "https://images.unsplash.com/photo-1609102026434-c1d11202c0eb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=750&q=60",
+            "facebook_link": "https://www.facebook.com/TheRialtoTucson/",
+            "website": "https://www.therialto.com/",
+            "seeking_description": "The Rialto is seeking talented musicians in all genres to perform on our stage. We have a focus on promoting local and regional artists."
+        },
+        {
+            "name": "The Independent",
+            "city": "San Francisco",
+            "address": "628 Divisadero St, San Francisco, CA 94117",
+            "phone": "(415) 771-1421",
+            "image_link": "https://images.unsplash.com/photo-1636930245053-a5503c411cd8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=653&q=60",
+            "facebook_link": "https://www.facebook.com/TheIndependentSF/",
+            "website": "https://www.theindependentsf.com/",
+            "seeking_description": "The Independent is seeking talented musicians in all genres to perform on our stage. We have a passion for supporting independent and alternative artists."
+        },
+        {
+            "name": "The Apollo Theater",
+            "city": "New York",
+            "address": "253 W 125th St, New York, NY 10027",
+            "phone": "(212) 531-5300",
+            "image_link": "https://images.unsplash.com/photo-1632009613808-70a20dacccb6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=750&q=60",
+            "facebook_link": "https://www.facebook.com/TheApolloTheater/",
+            "website": "https://www.apollotheater.org/",
+            "seeking_description": "The Apollo Theater is seeking talented musicians in all genres to perform on our stage. We have a strong commitment to promoting emerging and established artists in the African American community."
         }
+
     ]
 
     for venue in venues:

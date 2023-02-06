@@ -81,30 +81,18 @@ with app.app_context():
     items = []
 
     if is_search:
-      query = City.query.filter(exists().where(Venue.city_id==City.id).where(Venue.name.ilike(f'%{search_term}%')))
+      query = City.query.filter(exists().where(Venue.city_id == City.id).where(Venue.name.ilike(f'%{search_term}%')))
     else:
-      query = City.query.filter(exists().where(Venue.city_id==City.id))
+      query = City.query.filter(exists().where(Venue.city_id == City.id))
 
     cities = query.order_by('id').all()
 
     for city in cities:
-      city_venues = []
-
       for venue in city.venues:
-        item = {
-          'id': venue.id,
-          'name': venue.name,
-          'num_upcoming_shows': venue.num_upcoming_shows
-        }
-        city_venues.append(item)
-        results_count += 1
+        if not is_search or (is_search and search_term.lower() in venue.name.lower()):
+          results_count += 1
 
-      items.append({
-        'city': city,
-        'venues': city_venues
-      })
-
-    return render_template('pages/venues.html', items=items, search_term=search_term, results_count=results_count)
+    return render_template('pages/venues.html', cities=cities, search_term=search_term, results_count=results_count)
 
   @app.route('/venues/<int:venue_id>')
   def show_venue(venue_id):
@@ -146,23 +134,7 @@ with app.app_context():
   @app.route('/artists/search', methods=['POST'])
   @app.route('/artists')
   def artists():
-    items = (Artist.query
-           .outerjoin(Show, Artist.id == Show.artist_id)
-           .group_by(Artist.id)
-           .order_by(Artist.name)
-           .add_columns(func.count(Show.id))
-           .filter(Show.start_time >= datetime.now())
-           .all())
-
-    artists = []
-
-    for artist, count in items:
-      artists.append({
-        "id": artist.id,
-        "name": artist.name,
-        "num_upcoming_shows": count
-      })
-
+    artists = Artist.query.order_by(Artist.name).all()
     return render_template('pages/artists.html', artists=artists)
 
   @app.route('/artists/search', methods=['POST'])
