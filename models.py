@@ -110,13 +110,3 @@ class Show(db.Model):
     @property
     def start_time_formatted(self):
         return self.start_time.strftime('%d %B %Y %H:%M')
-
-# TODO: complete the availability model
-# class ArtistAvailability(db.Model):
-#     __tablename__ = 'artist_availabilities'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), nullable=False)
-#     day_of_week = db.Column(db.Integer, nullable=False)
-#     start_time = db.Column(db.Time, nullable=False)
-#     end_time = db.Column(db.Time, nullable=False)
