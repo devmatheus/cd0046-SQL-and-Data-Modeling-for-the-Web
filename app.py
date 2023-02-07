@@ -4,7 +4,7 @@
 # I had to modernize the code to work with the latest version of Python, Flask, and SQLAlchemy. 
 # I decided to put the models in a separate file, models.py, and import them into app.py.
 # 
-# Screenrecording: 
+# Screen recording: https://d.pr/v/RaPBhQ
 #
 # Steps to run the application:
 # 1. Create a db: `createdb fyyur`; The postgres password must be `abc`;
