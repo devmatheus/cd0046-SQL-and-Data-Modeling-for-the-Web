@@ -9,13 +9,13 @@
         {{ form.name(class_ = 'form-control', autofocus = true) }}
       </div>
       <div class="form-group">
-          <label>City & State</label>
+          <label>State & City</label>
           <div class="form-inline">
             <div class="form-group">
-              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
+              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
             </div>
             <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
+              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
             </div>
           </div>
       </div>
@@ -29,7 +29,6 @@
         </div>
       <div class="form-group">
         <label for="genres">Genres</label>
-        <small>Ctrl+Click to select multiple</small>
         {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', autofocus = true) }}
       </div>
       <div class="form-group">
@@ -60,4 +59,31 @@
       <input type="submit" value="Edit Venue" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      $('#name').val('{{ venue.name }}');
+      $('#phone').val('{{ venue.phone }}');
+      $('#address').val('{{ venue.address }}');
+
+      $('#state').val('{{ venue.city.state_code }}');
+      $('#city').data('val', '{{ venue.city.id }}');
+
+      let genres = [];
+      {% for genre in venue.genres %}
+        genres.push('{{ genre.id }}');
+      {% endfor %}
+      $('#genres').val(genres);
+
+      $('#facebook_link').val('{{ venue.facebook_link }}');
+      $('#image_link').val('{{ venue.image_link }}');
+      $('#website_link').val('{{ venue.website }}');
+
+      {% if venue.seeking_talent %}
+        $('#seeking_talent').trigger('click');
+      {% endif %}
+
+      $('#seeking_description').val('{{ venue.seeking_description }}');
+    });
+  </script>
 {% endblock %}

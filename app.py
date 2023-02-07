@@ -3,6 +3,8 @@
 #----------------------------------------------------------------------------#
 # I had to modernize the code to work with the latest version of Python, Flask, and SQLAlchemy. 
 # I decided to put the models in a separate file, models.py, and import them into app.py.
+# 
+# Screenrecording: 
 #
 # Steps to run the application:
 # 1. Create a db: `createdb fyyur`; The postgres password must be `abc`;
@@ -210,27 +212,30 @@ with app.app_context():
   @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
   def edit_venue(venue_id):
     form = VenueForm()
-    venue={
-      "id": 1,
-      "name": "The Musical Hop",
-      "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-      "address": "1015 Folsom Street",
-      "city": "San Francisco",
-      "state": "CA",
-      "phone": "123-123-1234",
-      "website": "https://www.themusicalhop.com",
-      "facebook_link": "https://www.facebook.com/TheMusicalHop",
-      "seeking_talent": True,
-      "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-      "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
-    }
-    # TODO: populate form with values from venue with ID <venue_id>
+    venue = Venue.query.get(venue_id)
     return render_template('forms/edit_venue.html', form=form, venue=venue)
 
   @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
   def edit_venue_submission(venue_id):
-    # TODO: take values from the form submitted, and update existing
-    # venue record with ID <venue_id> using the new attributes
+    try:
+      venue = Venue.query.get(venue_id)
+      venue.name = request.form['name']
+      venue.city = City.query.get(request.form['city'])
+      venue.address = request.form['address']
+      venue.phone = request.form['phone']
+      venue.genres = Genre.query.filter(Genre.id.in_(request.form.getlist('genres'))).all()
+      venue.facebook_link = request.form['facebook_link']
+      venue.image_link = request.form['image_link']
+      venue.website = request.form['website_link']
+      venue.seeking_talent = request.form['seeking_talent'] == 'y'
+      venue.seeking_description = request.form['seeking_description']
+
+      db.session.commit()
+      flash('Venue ' + venue.name + ' was successfully updated!')
+    except:
+      db.session.rollback()
+      flash('An error occurred. Venue ' + request.form['name'] + ' could not be updated.', 'error')
+      
     return redirect(url_for('show_venue', venue_id=venue_id))
 
   #  Create Artist
