@@ -134,6 +134,11 @@ with app.app_context():
 
   @app.route('/venues/create', methods=['POST'])
   def create_venue_submission():
+    form = VenueForm(request.form)
+
+    if not form.validate():
+      return render_template('forms/new_venue.html', form=form)
+      
     try:
       venue = Venue(
         name=request.form['name'],
@@ -189,6 +194,11 @@ with app.app_context():
 
   @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
   def edit_artist_submission(artist_id):
+    form = ArtistForm(request.form)
+
+    if not form.validate():
+      return render_template('forms/edit_artist.html', form=form)
+
     try:
       artist = Artist.query.get(artist_id)
       artist.name = request.form['name']
@@ -217,6 +227,11 @@ with app.app_context():
 
   @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
   def edit_venue_submission(venue_id):
+    form = VenueForm(request.form)
+
+    if not form.validate():
+      return render_template('forms/edit_venue.html', form=form)
+
     try:
       venue = Venue.query.get(venue_id)
       venue.name = request.form['name']
@@ -248,6 +263,11 @@ with app.app_context():
 
   @app.route('/artists/create', methods=['POST'])
   def create_artist_submission():
+    form = ArtistForm(request.form)
+
+    if not form.validate():
+      return render_template('forms/new_artist.html', form=form)
+
     try:
       artist = Artist(
         name=request.form['name'],

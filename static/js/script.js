@@ -8,6 +8,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
   $('#genres').select2();
 
+  $('.error-list').each(function () {
+    $(this).closest('.form-group')
+            .addClass('has-error')
+            .find('input')
+            .addClass('invalid-feedback');
+  });
+
   $(document).on('change', '#state', function () {
     let stateCode = $(this).val();
     $.ajax({

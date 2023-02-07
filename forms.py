@@ -11,10 +11,15 @@ def states_options():
         from models import State, City
         return [(state.code, state.name) for state in State.query.filter(exists().where(City.state_code == State.code)).order_by(State.name).all()]
 
+def cities_options():
+    with app.app_context():
+        from models import City
+        return [(city.id, city.name) for city in City.query.order_by(City.name).all()]
+
 def genres_options():
     with app.app_context():
         from models import Genre
-        return [(genre.id, genre.name) for genre in Genre.query.order_by(Genre.name).all()]
+        return [(str(genre.id), genre.name) for genre in Genre.query.order_by(Genre.name).all()]
 
 def validate_phone(form, field):
     phone_pattern = re.compile(r'^\d{3}-\d{3}-\d{4}$')
@@ -30,14 +35,14 @@ def validate_state(form, field):
 def validate_city(form, field):
     with app.app_context():
         from models import City
-        if not City.query.filter_by(name=field.data, state_code=form.state.data).first():
+        if not City.query.filter_by(id=field.data, state_code=form.state.data).first():
             raise ValidationError('Invalid city')
 
 def validate_genres(form, field):
     with app.app_context():
         from models import Genre
-        if not Genre.query.filter(Genre.id.in_(field.data)).first():
-            raise ValidationError('Invalid genres')
+        if Genre.query.filter(Genre.id.in_(field.data)).count() != len(field.data):
+            raise ValidationError('Invalid Genres')
 
 class ShowForm(Form):
     with app.app_context():
@@ -75,14 +80,16 @@ class ArtistForm(Form):
         validators=[
             DataRequired(),
             validate_city
-        ]
+        ],
+        choices=cities_options()
     )
     phone = StringField(
         'phone',
         validators=[validate_phone]
     )
     image_link = StringField(
-        'image_link'
+        'image_link',
+        validators=[URL()]
     )
     genres = SelectMultipleField(
         'genres',
@@ -117,7 +124,8 @@ class VenueForm(Form):
         validators=[
             DataRequired(),
             validate_city
-        ]
+        ],
+        choices=cities_options()
     )
     state = SelectField(
         'state',
@@ -132,10 +140,12 @@ class VenueForm(Form):
         validators=[DataRequired()]
     )
     phone = StringField(
-        'phone'
+        'phone',
+        validators=[validate_phone]
     )
     image_link = StringField(
-        'image_link'
+        'image_link',
+        validators=[URL()]
     )
     genres = SelectMultipleField(
         'genres',

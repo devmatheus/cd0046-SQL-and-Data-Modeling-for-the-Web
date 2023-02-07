@@ -7,6 +7,12 @@
     <div class="form-group">
       <label for="name">Name</label>
       {{ form.name(class_ = 'form-control', autofocus = true) }}
+
+      {% for error in form.name.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
     <div class="form-group">
       <label>State & City</label>
@@ -18,39 +24,93 @@
           {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
         </div>
       </div>
+
+      {% for error in form.state.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
+
+      {% for error in form.city.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
     <div class="form-group">
       <label for="phone">Phone</label>
       {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true) }}
+
+      {% for error in form.phone.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
     <div class="form-group">
       <label for="genres">Genres</label>
       {{ form.genres(class_ = 'form-control', autofocus = true) }}
+
+      {% for error in form.genres.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
     <div class="form-group">
       <label for="facebook_link">Facebook Link</label>
       {{ form.facebook_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+
+      {% for error in form.facebook_link.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
 
     <div class="form-group">
       <label for="image_link">Image Link</label>
       {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+
+      {% for error in form.image_link.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
 
     <div class="form-group">
       <label for="website_link">Website Link</label>
       {{ form.website_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+
+      {% for error in form.website_link.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
 
     <div class="form-group">
       <label for="seeking_venue">Looking for Venues</label>
       <input type="hidden" name="seeking_venue" value="n">
       {{ form.seeking_venue(placeholder='Venue', autofocus = true) }}
+
+      {% for error in form.seeking_venue.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
 
     <div class="form-group seeking-description-holder hidden">
       <label for="seeking_description">Seeking Description</label>
       {{ form.seeking_description(class_ = 'form-control', autofocus = true) }}
+
+      {% for error in form.seeking_description.errors %}
+      <ul class="error-list text-danger">
+        <li>{{ error }}</li>
+      </ul>
+      {% endfor %}
     </div>
     <input type="submit" value="Create Artist" class="btn btn-primary btn-lg btn-block">
   </form>
