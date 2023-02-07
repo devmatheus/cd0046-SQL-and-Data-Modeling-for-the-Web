@@ -4,6 +4,10 @@ window.parseISOString = function parseISOString(s) {
 };
 
 window.addEventListener('DOMContentLoaded', function () {
+  $('#phone').mask('000-000-0000');
+
+  $('#genres').select2();
+
   $(document).on('change', '#state', function () {
     let stateCode = $(this).val();
     $.ajax({
@@ -18,9 +22,21 @@ window.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+
   $('#state').trigger('change');
-
-  $('#phone').mask('000-000-0000');
-
-  $('#genres').select2();
+  
+  $(document).on('click', '.delete-venue', function () {
+    let id = $(this).data('id');
+    $.ajax({
+      url: '/venues/' + id,
+      type: 'DELETE',
+      success: function (result) {
+        if (result.success) {
+          window.location.href = '/';
+        } else {
+          window.location.reload();
+        }
+      }
+    });
+  });
 });
