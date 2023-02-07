@@ -62,6 +62,32 @@ with app.app_context():
   # Controllers.
   #----------------------------------------------------------------------------#
 
+  @app.route('/api/cities', methods=['GET'])
+  def api_cities():
+    state_code = request.args.get('state_code')
+    if state_code:
+      cities = City.query.filter_by(state_code=state_code).order_by(City.name).all()
+    else: 
+      cities = City.query.order_by(City.name).all()
+
+    return jsonify({city.id: city.name for city in cities})
+
+  @app.route('/api/venues/<venue_id>', methods=['DELETE'])
+  def delete_venue(venue_id):
+    body = {}
+    try:
+      venue = Venue.query.get(venue_id)
+      db.session.delete(venue)
+      db.session.commit()
+      flash('Venue ' + venue.name + ' was successfully deleted!')
+      body['success'] = True
+    except:
+        db.session.rollback()
+        flash('An error occurred. Venue #' + venue_id + ' could not be deleted.', 'error')
+        body['success'] = False
+
+    return jsonify(body)
+
   @app.route('/')
   def index():
     return render_template('pages/home.html')
@@ -129,22 +155,6 @@ with app.app_context():
 
     return render_template('pages/home.html')
 
-  @app.route('/venues/<venue_id>', methods=['DELETE'])
-  def delete_venue(venue_id):
-    body = {}
-    try:
-      venue = Venue.query.get(venue_id)
-      db.session.delete(venue)
-      db.session.commit()
-      flash('Venue ' + venue.name + ' was successfully deleted!')
-      body['success'] = True
-    except:
-        db.session.rollback()
-        flash('An error occurred. Venue #' + venue_id + ' could not be deleted.', 'error')
-        body['success'] = False
-
-    return jsonify(body)
-
   #  Artists
   #  ----------------------------------------------------------------
   @app.route('/artists/search', methods=['POST'])
@@ -172,26 +182,28 @@ with app.app_context():
   @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
   def edit_artist(artist_id):
     form = ArtistForm()
-    artist={
-      "id": 4,
-      "name": "Guns N Petals",
-      "genres": ["Rock n Roll"],
-      "city": "San Francisco",
-      "state": "CA",
-      "phone": "326-123-5000",
-      "website": "https://www.gunsnpetalsband.com",
-      "facebook_link": "https://www.facebook.com/GunsNPetals",
-      "seeking_venue": True,
-      "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
-      "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
-    }
-    # TODO: populate form with fields from artist with ID <artist_id>
+    artist = Artist.query.get(artist_id)
     return render_template('forms/edit_artist.html', form=form, artist=artist)
 
   @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
   def edit_artist_submission(artist_id):
-    # TODO: take values from the form submitted, and update existing
-    # artist record with ID <artist_id> using the new attributes
+    try:
+      artist = Artist.query.get(artist_id)
+      artist.name = request.form['name']
+      artist.city = City.query.get(request.form['city'])
+      artist.phone = request.form['phone']
+      artist.genres = Genre.query.filter(Genre.id.in_(request.form.getlist('genres'))).all()
+      artist.facebook_link = request.form['facebook_link']
+      artist.image_link = request.form['image_link']
+      artist.website = request.form['website_link']
+      artist.seeking_venue = request.form['seeking_venue'] == 'y'
+      artist.seeking_description = request.form['seeking_description']
+
+      db.session.commit()
+      flash('Artist ' + artist.name + ' was successfully updated!')
+    except:
+      db.session.rollback()
+      flash('An error occurred. Artist ' + request.form['name'] + ' could not be updated.', 'error')
 
     return redirect(url_for('show_artist', artist_id=artist_id))
 
@@ -283,16 +295,6 @@ with app.app_context():
         flash('An error occurred. Show could not be listed.', 'error')
 
     return render_template('pages/home.html')
-
-  @app.route('/cities', methods=['GET'])
-  def cities():
-    state_code = request.args.get('state_code')
-    if state_code:
-      cities = City.query.filter_by(state_code=state_code).order_by(City.name).all()
-    else: 
-      cities = City.query.order_by(City.name).all()
-
-    return jsonify({city.id: city.name for city in cities})
 
   @app.errorhandler(404)
   def not_found_error(error):

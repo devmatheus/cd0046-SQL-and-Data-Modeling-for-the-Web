@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', function () {
   $(document).on('change', '#state', function () {
     let stateCode = $(this).val();
     $.ajax({
-      url: "/cities",
+      url: '/api/cities',
       data: {state_code: stateCode},
       success: function (data) {
         let cityField = $("#city");
@@ -19,6 +19,11 @@ window.addEventListener('DOMContentLoaded', function () {
         $.each(data, function (key, value) {
           cityField.append("<option value='" + key + "'>" + value + "</option>");
         });
+
+        if (cityField.data('city')) {
+          cityField.val(cityField.data('city'));
+          cityField.removeData('city');
+        }
       }
     });
   });
@@ -28,7 +33,7 @@ window.addEventListener('DOMContentLoaded', function () {
   $(document).on('click', '.delete-venue', function () {
     let id = $(this).data('id');
     $.ajax({
-      url: '/venues/' + id,
+      url: '/api/venues/' + id,
       type: 'DELETE',
       success: function (result) {
         if (result.success) {

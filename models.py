@@ -44,7 +44,7 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String(500))
     shows = db.relationship('Show', backref='venue', lazy=True, cascade="delete")
     genres = db.relationship('Genre', secondary=venue_genres, lazy='subquery',
-        backref=db.backref('venues', lazy=True), cascade="delete")
+        backref=db.backref('venues', lazy=True))
 
     @property
     def upcoming_shows(self):
@@ -81,7 +81,7 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(500))
     shows = db.relationship('Show', backref='artist', lazy=True, cascade="delete")
     genres = db.relationship('Genre', secondary=artist_genres, lazy='subquery',
-        backref=db.backref('artists', lazy=True), cascade="delete")
+        backref=db.backref('artists', lazy=True))
 
     @property
     def upcoming_shows(self):

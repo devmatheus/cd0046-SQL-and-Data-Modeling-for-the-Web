@@ -9,13 +9,13 @@
         {{ form.name(class_ = 'form-control', autofocus = true) }}
       </div>
       <div class="form-group">
-          <label>City & State</label>
+          <label>State & City</label>
           <div class="form-inline">
             <div class="form-group">
-              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
+              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
             </div>
             <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
+              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
             </div>
           </div>
       </div>
@@ -56,4 +56,30 @@
       <input type="submit" value="Edit Artist" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      $('#name').val('{{ artist.name }}');
+      $('#phone').val('{{ artist.phone }}');
+
+      $('#state').val('{{ artist.city.state_code }}');
+      $('#city').data('val', '{{ artist.city.id }}');
+
+      let genres = [];
+      {% for genre in artist.genres %}
+        genres.push('{{ genre.id }}');
+      {% endfor %}
+      $('#genres').val(genres);
+
+      $('#facebook_link').val('{{ artist.facebook_link }}');
+      $('#image_link').val('{{ artist.image_link }}');
+      $('#website_link').val('{{ artist.website }}');
+
+      {% if artist.seeking_venue %}
+        $('#seeking_venue').trigger('click');
+      {% endif %}
+
+      $('#seeking_description').val('{{ artist.seeking_description }}');
+    });
+  </script>
 {% endblock %}
